@@ -56,12 +56,21 @@ void setup()
   m.setScaleFontSize(18);
   m.setScaleFontName("Times New Roman bold");
   m.setScaleFontColor(color(200, 30, 70));
-  m.setArcColor(color(141, 113, 178));
   m.setArcThickness(10);
   m.setMaxScaleValue(400);
   m.setNeedleThickness(3);
   m.setMinInputSignal(0);
   m.setMaxInputSignal(400);
+  m.setLowSensorWarningActive(true);
+  m.setHighSensorWarningActive(true);
+  m.setLowSensorWarningValue(passFail-80);
+  m.setHighSensorWarningValue(passFail);
+  m.setLowSensorWarningArcColor(color(0,255,0));
+  m.setHighSensorWarningArcColor(color(255,0,0));
+  m.setMidSensorWarningArcColor(color(255,255,0));
+  m.setSensorWarningLowText("");
+  m.setSensorWarningHighText("");
+  
   
 // OTHER SETUP //
   port = new Serial(this, "COM4" ,9600);
@@ -104,7 +113,7 @@ void draw()
   m.updateMeter((int)displayGVal);
   fill(0,0,255);
   text(displayGVal,width/3.5,height/2+height/3.8);
-  if(displayGVal < passFail)
+  if(displayGVal < passFail && displayGVal != 0)
   {
     textSize(55);
     fill(0,255,0);
