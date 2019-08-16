@@ -1,11 +1,10 @@
+
 /* EggDropScoresV1_2
  *  Jackson Carroll
  *  Created: July 23, 2019
  *  Modified: N/A
  *  
  *  V1.2 - sorting top scores, converting g values, adding success/failure and group scores
- *
- * NOTE: THIS ORIGINALLY WAS A BELLWETHER MODIFIED VERSION OF THE EXAMPLE SKETCH: Basics/Data/CharacterStrings
  */
 
 import meter.*;              // Library for meters
@@ -24,14 +23,12 @@ boolean firstContact = true;   //if contact has not been established
 int passFail = 240;            //cutoff value for success/failure
 
 Meter m;                       // Create a new meter, call it m
-char letter;
-String words = "Begin...";
 
 int scoreInterval = height/2;     // Vertical spacing between scores
 int scoreStartx = width*14;       // Where to start scores list, x
 int scoreStarty = height*2;       // Where to start scores list, y
 
-String namesArray[] = {"Apollo", "Gemini", "Mercury", "Bezerka", "Commando",
+String namesArray[] = {"Apollo", "Gemini", "Mercury", "Voyager", "Enterprise",
                        "Dexphnaus", "Eagle", "Fitzgarb", "Hercules", "Icarus", 
                        "Juno", "Voyager", "Challenger", "Enterprise", "Kestrel", 
                        "Falcon", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
@@ -63,7 +60,7 @@ void setup()
   m.setMaxInputSignal(400);
   m.setLowSensorWarningActive(true);
   m.setHighSensorWarningActive(true);
-  m.setLowSensorWarningValue(passFail-80);
+  m.setLowSensorWarningValue(passFail-40);
   m.setHighSensorWarningValue(passFail);
   m.setLowSensorWarningArcColor(color(0,255,0));
   m.setHighSensorWarningArcColor(color(255,0,0));
@@ -100,7 +97,7 @@ void draw()
   if(scoreVal[capName] != 401)    //don't display until a mission comes in
     text(namesArray[capName] + " " + missionNum[capName], width/4, height/6);     //show name of current mission being displayed 
   textSize(35);
-  for (int a=0; a<3; a++)    //update this loop to the number of capsules being used.
+  for (int a=0; a<5; a++)    //update this loop to the number of capsules being used.
   {
     if(scoreVal[a] != 401)   //if there is a top score, display it
     {
