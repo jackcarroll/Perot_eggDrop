@@ -28,21 +28,23 @@ int scoreInterval = height/2;     // Vertical spacing between scores
 int scoreStartx = width*14;       // Where to start scores list, x
 int scoreStarty = height*2;       // Where to start scores list, y
 
-String namesArray[] = {"Apollo", "Gemini", "Mercury", "Voyager", "Enterprise",
-                       "Dexphnaus", "Eagle", "Fitzgarb", "Hercules", "Icarus", 
-                       "Juno", "Voyager", "Challenger", "Enterprise", "Kestrel", 
-                       "Falcon", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
-int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                                            //increases every time it sees new data from each respective capsule
-float scoreVal[] = {401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401};    //saves the top score of each capsule (init-ed to max value+1)
-int topMission[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                                            //saves the top scoring mission number of each capsule
-float recentScore[] = {401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401};
+String namesArray[] = {"Apollo", "Mercury", "Gemini", "Enterprise", "Voyager", "Discovery", 
+                       "Atlantis", "Endeavour", "Artemis", "Orion", "Pioneer", "Ranger",
+                       "Mariner", "Spirit", "Pathfinder", "Phoenix", "Curiosity", "Viking",
+                       "Cassini", "Galileo", "Juno", "Magellan", "Infinity", "Falcon", 
+                       "Serenity", "Reliant", "Defiant", "Kelvin", "Intrepid", "Eagle",
+                       "Odyssey", "Kestrel", "Saturn", "Hercules"};
+int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                                            //increases every time it sees new data from each respective capsule
+float scoreVal[] = {401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401};    //saves the top score of each capsule (init-ed to max value+1)
+int topMission[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                                            //saves the top scoring mission number of each capsule
+float recentScore[] = {401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401,401};
 
 void setup() 
 {
 // METER SETUP DEFINITIONS //  
   fullScreen();
   m = new Meter(this, width/16, height/4);
-  m.setMeterWidth(width/2);
+  m.setMeterWidth(width/3);
   m.setTitleFontSize(20);
   m.setTitleFontName("Arial bold");
   m.setTitle("G-Force (g)");
@@ -70,7 +72,7 @@ void setup()
   
   
 // OTHER SETUP //
-  port = new Serial(this, "COM4" ,9600);
+  port = new Serial(this, "COM5" ,9600);
 }
 
 void draw() 
@@ -92,35 +94,35 @@ void draw()
   background(0); // Set background to black
   fill(255,255,255);
   textSize(55);
-  text("Top Scores", scoreStartx, scoreStarty - 20);          // Show text "Top Scores" at x position "scoreStartx" and y position "scoreStarty - 20"
-  text("Group Scores",scoreStartx,scoreStarty-20+height/2);
+  text("Top Scores", scoreStartx+width/20, scoreStarty - 20);          // Show text "Top Scores" at x position "scoreStartx" and y position "scoreStarty - 20"
+  text("Group Scores",scoreStartx-width/4,scoreStarty-20);
   if(scoreVal[capName] != 401)    //don't display until a mission comes in
-    text(namesArray[capName] + " " + missionNum[capName], width/4, height/6);     //show name of current mission being displayed 
-  textSize(35);
-  for (int a=0; a<5; a++)    //update this loop to the number of capsules being used.
+    text(namesArray[capName] + " " + missionNum[capName], width/6.1, height/6);     //show name of current mission being displayed 
+  textSize(30);
+  for (int a=0; a<31; a++)    //update this loop to the number of capsules being used.
   {
     if(scoreVal[a] != 401)   //if there is a top score, display it
     {
-      text(namesArray[a] + " " + topMission[a], scoreStartx,(scoreStarty + (a * scoreInterval)+height/16));
-      text (scoreVal[a], scoreStartx + width/8,(scoreStarty + (a * scoreInterval)+height/16));
-      text(namesArray[a] + " " + missionNum[a], scoreStartx,(scoreStarty + (a * scoreInterval)+height/1.8));
-      text (recentScore[a], scoreStartx + width/8,(scoreStarty + (a * scoreInterval)+height/1.8));
+      text(namesArray[a] + " " + topMission[a], scoreStartx+width/20,(scoreStarty + (a * scoreInterval)+height/16));
+      text (scoreVal[a], scoreStartx+width/20 + width/8,(scoreStarty + (a * scoreInterval)+height/16));
+      text(namesArray[a] + " " + missionNum[a], scoreStartx-width/4,(scoreStarty + (a * scoreInterval)+height/16));
+      text (recentScore[a], scoreStartx-width/4 + width/8,(scoreStarty + (a * scoreInterval)+height/16));
     }
   }
   m.updateMeter((int)displayGVal);
   fill(0,0,255);
-  text(displayGVal,width/3.5,height/2+height/3.8);
+  text(displayGVal,width/5,height/2 + height/10.5);
   if(displayGVal < passFail && displayGVal != 0)
   {
     textSize(55);
     fill(0,255,0);
-    text("Mission Success!",width/4.7,height/2+height/3);
+    text("Mission Success!",width/7.5,height/2+height/6);
   }
   else if(scoreVal[capName]<401)    //don't display until a mission comes in
   {
     textSize(55);
     fill(255,0,0);
-    text("Mission Failure!",width/4.7,height/2+height/3);
+    text("Mission Failure!",width/7.5,height/2+height/6);
   }
 }
 

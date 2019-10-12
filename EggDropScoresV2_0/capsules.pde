@@ -14,12 +14,12 @@ public class LinkedList
   //node of linked list
   class Node
   {
-    int gVal;
+    float gVal;
     int code;
     Node next;
     
     //constructor
-    Node(int c, int g)
+    Node(int c, float g)
     {
       code = c;
       gVal = g;
@@ -28,7 +28,7 @@ public class LinkedList
   }
   
   //insert a new mission/node
-  public static LinkedList insert(LinkedList list, int c, int g)
+  public LinkedList insert(LinkedList list, int c, float g)
   {
     //create a new node with given data
     Node new_node = new Node(c,g);
@@ -63,23 +63,35 @@ public class LinkedList
   }
 }
 
-class Capsule 
+public class Capsule 
 {
-  private String nameList[] = {"Apollo", "Gemini", "Mercury", "Voyager", "Enterprise",
-                               "Dexphnaus", "Eagle", "Fitzgarb", "Hercules", "Icarus", 
-                               "Juno", "Intrepid", "Challenger", "Kelvin", "Kestrel", 
-                               "Falcon", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
+  private String nameList[] = {"Apollo", "Mercury", "Gemini", "Enterprise", "Voyager", "Discovery", 
+                               "Atlantis", "Endeavour", "Artemis", "Orion", "Pioneer", "Ranger",
+                               "Mariner", "Spirit", "Pathfinder", "Phoenix", "Curiosity", "Viking",
+                               "Cassini", "Galileo", "Juno", "Magellan", "Infinity", "Falcon", 
+                               "Serenity", "Reliant", "Defiant", "Kelvin", "Intrepid", "Eagle",
+                               "Odyssey", "Kestrel", "Saturn", "Hercules"};
   private String name;
   public int codeName;
-  public LinkedList missionList = new LinkedList();
+  public int missionNum;
   
-  Capsule(int code)                    //MAIN CONSTRUCTOR
+  Capsule(int code)                           //MAIN CONSTRUCTOR
   {
     codeName = code;
     name = nameList[codeName];
+    missionNum = newMissionNum(code);
+    
   }
   
-  Capsule(String n)                    //extra constructor in case you know the name, but not the code associated with it
+  Capsule(int code, int mission)              //constructor for non-mqtt testing
+  {
+    codeName = code;
+    name = nameList[codeName];
+    missionNum = mission;
+    
+  }
+  
+  Capsule(String n)                           //extra constructor in case you know the name, but not the code associated with it
   {
     name = n;
     for(int i=0; i<nameList.length; i++)
@@ -89,7 +101,7 @@ class Capsule
     }
   }
   
-  public String getName()
+  public String getCapName()
   {
     return name;
   }
@@ -99,36 +111,43 @@ class Capsule
     return codeName;
   }
   
-  public void newMission(Mission m)
+  public int newMissionNum(int code)
   {
-    missionList = insert(missionList, m.getCodeName(), m.getGVal());
+    //mqtt.subscribe(codeName, lastMissionNum);
+    return 1;
   }
 }
 
-class Mission extends Capsule
+public class Mission extends Capsule
 {
-  public int gVal;
-  public int mass = 0;                      //second variable that is unused, but left in code as option
+  public float gVal = 401;                    //401 is larger than the largest possible score (real g-value), init-ed for potential comparison purposes
+  public int mass = 0;                        //second variable that is unused, but left in code as option
   
-  Mission(int code, int g)                  //MAIN CONSTRUCTOR
+  Mission(int code, float g)                  //MAIN CONSTRUCTOR
   {
     super(code);
     gVal = g;
   }
   
-  Mission(int code, int g, int m)           //constructor for if you use mass as a variable
+  Mission(int code, int mission, float g)     //constructor for non-mqtt case
+  {
+    super(code,mission);
+    gVal = g;
+  }
+  
+  Mission(int code, float g, int m)           //constructor for if you use mass as a variable
   {
     super(code);
     gVal = g;
     mass = m;
   }
   
-  public void setGVal(int g)
+  public void setGVal(float g)
   {
     gVal = g;
   }
   
-  public int getGVal()
+  public float getGVal()
   {
     return gVal;
   }
