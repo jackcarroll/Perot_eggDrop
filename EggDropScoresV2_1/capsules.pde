@@ -6,27 +6,26 @@
  *  V1.0 - established superclass Capsule and subclass Mission
  */
  
-//Class implementation of a singly linked list
-public class LinkedList
+//Class implementation of a singly linked list with methods built for this program's application
+//node of linked list
+public class Node
+{
+  Mission miss;
+  Node next;
+  
+  //constructor
+  Node(Mission m)
+  {
+    miss = m;
+    next = null;
+  }
+}
+public class Linked_List
 {
   Node head;                           //head of list
   
-  //node of linked list
-  class Node
-  {
-    Mission miss;
-    Node next;
-    
-    //constructor
-    Node(Mission m)
-    {
-      miss = m;
-      next = null;
-    }
-  }
-  
-  //insert a new mission/node
-  public LinkedList insert(LinkedList list, Mission m)
+  //append a new mission/node to the end of the list
+  public Linked_List addEnd(Linked_List list, Mission m)
   {
     //create a new node with given data
     Node new_node = new Node(m);
@@ -49,15 +48,79 @@ public class LinkedList
     return list;
   }
   
-  //return the most recent mission (tail of linked list)
-  public Node recentMission(LinkedList list)
+  //add a new mission/node to the front of the topScores list
+  public Linked_List addTop(Linked_List list, Mission m)
   {
-    Node last = list.head;
-    while(last.next != null)           //traverse linked list
+    Node new_node = new Node(m);
+    new_node.next = null;
+    
+    if(list.head == null)
+      list.head = new_node;
+    else
     {
-      last = last.next;
+      //traverse the list, comparing values and placing new_node in proper rank
+      Node curr = list.head, prev = list.head;
+      while(curr.next != null)
+      {
+        if(new_node.miss.getGVal() > curr.miss.getGVal())
+        {
+          prev.next = new_node;
+          new_node.next = curr;
+        }
+        prev = curr;
+        curr = curr.next;
+      }
     }
-    return last;
+    return list;
+  }
+  
+  //add a new mission/node to the front of the recentScores list
+  //and remove the previous mission of that capsule
+  public Linked_List addRecent(Linked_List list, Mission m)
+  {
+    Node new_node = new Node(m);
+    new_node.next = null;
+      
+    if(list.head == null)
+      list.head = new_node;
+    else
+    {
+      new_node.next = list.head;
+      list.head = new_node;
+      
+      Node iter = list.head;
+      while(iter.next != null)
+      {
+        if(iter.miss.getCodeName() == new_node.miss.getCodeName())
+          list = delete(list, iter.miss);
+        iter = iter.next;
+      }
+    }
+    
+    return list;
+  }
+  
+  //delete an element of the list based on what mission it stores
+  public Linked_List delete(Linked_List list, Mission m)
+  {
+    Node curr = list.head, prev = null;
+    
+    if(curr != null && curr.miss == m)
+    {
+      list.head = curr.next;
+      return list;
+    }
+    
+    while(curr != null && curr.miss != m)
+    {
+      prev = curr;
+      curr = curr.next;
+    }
+    
+    if(curr != null)
+      prev.next = curr.next;
+    
+    return list;
   }
 }
 
@@ -72,7 +135,7 @@ public class Capsule
   private String name;
   public int codeName;
   public int missionNum = 0;
-  private JSONObject missionNumJSON;
+  private JSONArray missionNumJSON = new JSONArray();
   
   Capsule(int code)                           //constructor if you don't need to track mission num
   {
@@ -120,16 +183,19 @@ public class Capsule
   
   public void newMissionNum(int[] currMissions)
   {
-    missionNumJSON.setJSONArray("currMissions", new JSONArray(new IntList(currMissions)));    //couple of inline casts to get the array into a format JSON can read
+    for(int i=0; i<currMissions.length; i++)
+    {
+      missionNumJSON.setInt(i,currMissions[i]);
+    }
     client.publish("missionNum", missionNumJSON.toString());
   }
 }
 
 public class Mission extends Capsule
 {
-  public float gVal = 401;                    //401 is larger than the largest possible score (real g-value), init-ed for potential comparison purposes
+  public float gVal;                    //401 is larger than the largest possible score (real g-value), init-ed for potential comparison purposes
   public int mass = 0;                        //second variable that is unused, but left in code as option
-  private JSONObject missionJSON;
+  private JSONObject missionJSON = new JSONObject();
   
   Mission(int code, float g)                  //MAIN CONSTRUCTOR
   {
@@ -148,6 +214,12 @@ public class Mission extends Capsule
     super(code);
     gVal = g;
     mass = m;
+  }
+  
+  Mission()                                   //empty constructor for init case
+  {
+    super(null);
+    gVal = 401;
   }
   
   public void setGVal(float g)

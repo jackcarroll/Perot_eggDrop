@@ -5,7 +5,7 @@
  *  
  *  V1.0 - established superclass Capsule and subclass Mission
  */
-
+ 
 //Class implementation of a singly linked list with methods built for this program's application
 //node of linked list
 public class Node
@@ -135,7 +135,7 @@ public class Capsule
   private String name;
   public int codeName;
   public int missionNum = 0;
-  private JSONObject missionNumJSON;
+  private JSONArray missionNumJSON = new JSONArray();
   
   Capsule(int code)                           //constructor if you don't need to track mission num
   {
@@ -183,24 +183,27 @@ public class Capsule
   
   public void newMissionNum(int[] currMissions)
   {
-    missionNumJSON.setJSONArray("currMissions", new JSONArray(new IntList(currMissions)));    //couple of inline casts to get the array into a format JSON can read
+    for(int i=0; i<currMissions.length; i++)
+    {
+      missionNumJSON.setInt(i,currMissions[i]);
+    }
     client.publish("missionNum", missionNumJSON.toString());
   }
 }
 
 public class Mission extends Capsule
 {
-  public float gVal = 401;                    //401 is larger than the largest possible score (real g-value), init-ed for potential comparison purposes
+  public float gVal;                    //401 is larger than the largest possible score (real g-value), init-ed for potential comparison purposes
   public int mass = 0;                        //second variable that is unused, but left in code as option
-  private JSONObject missionJSON;
+  private JSONObject missionJSON = new JSONObject();
   
-  Mission(int code, float g)                  //constructor if you don't need to track mission num
+  Mission(int code, float g)                  //MAIN CONSTRUCTOR
   {
     super(code);
     gVal = g;
   }
   
-  Mission(int code, int mission, float g)     //MAIN CONSTRUCTOR
+  Mission(int code, int mission, float g)     //constructor for non-mqtt case
   {
     super(code,mission);
     gVal = g;
@@ -211,6 +214,12 @@ public class Mission extends Capsule
     super(code);
     gVal = g;
     mass = m;
+  }
+  
+  Mission()                                   //empty constructor for init case
+  {
+    super(null);
+    gVal = 401;
   }
   
   public void setGVal(float g)

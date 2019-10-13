@@ -21,10 +21,10 @@ int oldGVal = 0;               //if this is the same capsule or not
 boolean newData = false;
 boolean firstContact = true;   //if contact has not been established
 int passFail = 240;            //cutoff value for success/failure
-int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
+int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
 
 Meter m;                       // Create a new meter, call it m
-Mission miss;
+Mission miss = new Mission();
 MQTTClient client;
 
 int scoreInterval = height/2;     // Vertical spacing between scores
@@ -65,10 +65,10 @@ void setup()
   
   // COMMUNICATION SET-UP //
   //Serial
-  port = new Serial(this, "COM4" ,9600);
+  port = new Serial(this, "COM5" ,9600);
   //MQTT
   client = new MQTTClient(this);
-  client.connect("test.mosquitto.org","Test Station");
+  client.connect("mqtt://try:try@broker.shiftr.io","Test Station");
 }
 
 void draw()
@@ -94,7 +94,8 @@ void draw()
   background(0); // Set background to black
   fill(255,255,255);
   textSize(55);
-  text(miss.getCapName() + " " + missionNum[capName], width/4, height/6);     //show name of current mission being displayed
+  if(miss.getCapName() != null)
+    text(miss.getCapName() + " " + missionNum[capName], width/4, height/6);     //show name of current mission being displayed
   textSize(35);
   m.updateMeter((int)miss.getGVal());
   fill(0,0,255);
