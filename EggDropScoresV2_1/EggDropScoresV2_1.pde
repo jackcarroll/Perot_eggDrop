@@ -24,7 +24,8 @@ int passFail = 240;            //cutoff value for success/failure
 int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
 
 Meter m;                       // Create a new meter, call it m
-Mission miss = new Mission();
+Mission miss;
+Mission currMiss;
 MQTTClient client;
 
 int scoreInterval = height/2;     // Vertical spacing between scores
@@ -62,6 +63,7 @@ void setup()
   m.setSensorWarningLowText("");
   m.setSensorWarningHighText("");
   
+  currMiss = new Mission();
   
   // COMMUNICATION SET-UP //
   //Serial
@@ -87,6 +89,8 @@ void draw()
     //send mission to leaderboard
     miss.newMission();
     
+    currMiss = miss;
+    
     newData = false;
   }
   
@@ -94,19 +98,21 @@ void draw()
   background(0); // Set background to black
   fill(255,255,255);
   textSize(55);
-  if(miss.getCapName() != null)
-    text(miss.getCapName() + " " + missionNum[capName], width/4, height/6);     //show name of current mission being displayed
+  if(currMiss.getCapName() != null)
+    text(currMiss.getCapName() + " " + missionNum[capName], width/4, height/6);     //show name of current mission being displayed
   textSize(35);
-  m.updateMeter((int)miss.getGVal());
+  if(currMiss.getGVal() != 401)
+    displayGVal = currMiss.getGVal();
+  m.updateMeter((int)displayGVal);
   fill(0,0,255);
   text(displayGVal,width/3.5,height/2+height/3.8);
-  if(miss.getGVal() < passFail && miss.getGVal() != 0)
+  if(currMiss.getGVal() < passFail && currMiss.getGVal() != 0)
   {
     textSize(55);
     fill(0,255,0);
     text("Mission Success!",width/4.7,height/2+height/3);
   }
-  else if(miss.getGVal()<401)    //don't display until a mission comes in
+  else if(currMiss.getGVal()<401)    //don't display until a mission comes in
   {
     textSize(55);
     fill(255,0,0);
