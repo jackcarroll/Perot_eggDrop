@@ -15,6 +15,7 @@ int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 boolean newData = false;
 
 Mission miss;
+Mission dummyMiss = new Mission();
 MQTTClient client;
 
 Linked_List recentScores;
@@ -35,7 +36,7 @@ void setup()
   // COMMUNICATION SET-UP //
   //MQTT
   client = new MQTTClient(this);
-  client.connect("test.mosquitto.org","Test Station");
+  client.connect("mqtt://try:try@broker.shiftr.io","Test Station");
 }
 
 void draw()
@@ -55,13 +56,17 @@ void draw()
   text("Group Scores", width/7, height/6);
   text("Top Scores", width-(width/3), height/6);
   textSize(30);
-  text("test 1", scoreCol1, scoreHeight);
-  text("test 2", scoreCol2, scoreHeight);
-  text("test 1", (width/1.1)-scoreCol2, scoreHeight);
-  text("test 2", (width/1.1)-scoreCol1, scoreHeight);
+  //text("test 1", scoreCol1, scoreHeight);
+  //text("test 2", scoreCol2, scoreHeight);
+  //text("test 1", (width/1.1)-scoreCol2, scoreHeight);
+  //text("test 2", (width/1.1)-scoreCol1, scoreHeight);
   //printing recentScores
   int i = 0;
-  Node last = recentScores.head;
+  Node last;
+  if(recentScores.head == null)
+    last = new Node(dummyMiss);
+  else
+    last = recentScores.head;
   while(last.next != null && i<16)    //first row of recentScores
   {
     text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), scoreCol1, scoreHeight+(i*scoreInterval));
@@ -77,7 +82,10 @@ void draw()
   }
   //printing topScores
   i = 0;
-  last = topScores.head;
+  if(topScores.head == null)
+    last = new Node(dummyMiss);
+  else
+    last = topScores.head;
   while(last.next != null && i<16)    //first row of topScores
   {
     text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), (width/1.1)-scoreCol2, scoreHeight+(i*scoreInterval));
@@ -108,6 +116,7 @@ void messageReceived(String topic, byte[] payload)
     //parse JSON here, set missionNum to updated vals
     JSONObject updateMissionNum = parseJSONObject(payload.toString());
     missionNum = updateMissionNum.getJSONArray("currMissions").getIntArray();    //efficient yet janky coding at its finest. 
+    println("missionNum Updated");
   }
   else if(topic == "newMission")
   {
@@ -117,7 +126,8 @@ void messageReceived(String topic, byte[] payload)
     if(newMission.getInt("missionNum") != missionNum[capName])                   //these should be equal, but just in case...
       missionNum[capName] = newMission.getInt("missionNum");
     newData = true;
+    println("newMission Updated");
   }
   else
-    println("Message Recieved from " + topic + "containing " + new String(payload));
+    println("Message Recieved from " + topic + " containing " + new String(payload));
 }
