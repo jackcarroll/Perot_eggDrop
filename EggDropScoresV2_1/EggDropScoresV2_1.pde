@@ -24,8 +24,8 @@ int passFail = 240;            //cutoff value for success/failure
 int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
 
 Meter m;                       // Create a new meter, call it m
-Mission miss;
-Mission currMiss;
+Mission miss;                  //a mission that is reinstated every newData
+Mission currMiss;              //stores the mission value that we want to display
 MQTTClient client;
 
 int scoreInterval = height/2;     // Vertical spacing between scores
@@ -75,7 +75,7 @@ void setup()
 
 void draw()
 {
-  //this is where the code really changes
+  //this is where the code really changes //<>//
   if(newData)
   {
     //create new mission
@@ -99,7 +99,7 @@ void draw()
   fill(255,255,255);
   textSize(55);
   if(currMiss.getCapName() != null)
-    text(currMiss.getCapName() + " " + missionNum[capName], width/4, height/6);     //show name of current mission being displayed
+    text(currMiss.getCapName() + " " + currMiss.getMissionNum(), width/4, height/6);     //show name of current mission being displayed
   textSize(35);
   if(currMiss.getGVal() != 401)
     displayGVal = currMiss.getGVal();
@@ -157,16 +157,18 @@ void serialEvent(Serial p)
 void clientConnected()
 {
   println("client connected");
-  client.subscribe("missionNum");
+  client.subscribe("/missionNum", 2);
 }
 
 void messageReceived(String topic, byte[] payload)
 {
-  if(topic == "missionNum")
+  println(topic);
+  if(topic.toString() == "/missionNum" && !newData)
   {
     //parse JSON here, set missionNum to updated vals
     JSONObject updateMissionNum = parseJSONObject(payload.toString());
     missionNum = updateMissionNum.getJSONArray("currMissions").getIntArray();    //efficient yet janky coding at its finest. 
+    println("missionNum Updated");
   }
   else
     println("Message Recieved from " + topic + "containing " + new String(payload));
