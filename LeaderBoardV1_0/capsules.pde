@@ -187,7 +187,7 @@ public class Capsule
     {
       missionNumJSON.setInt(i,currMissions[i]);
     }
-    client.publish("/missionNum", missionNumJSON.toString());
+    client.publish(missionNumTopic, missionNumJSON.toString());
   }
 }
 
@@ -235,11 +235,11 @@ public class Mission extends Capsule
   public void newMission()
   {
     boolean retained = true;
-    missionJSON.setInt("newMission/code", this.getCodeName());
-    missionJSON.setInt("newMission/missionNum", this.getMissionNum());
-    missionJSON.setFloat("newMission/gval",this.getGVal());
-    client.publish("/newMission", missionJSON.toString(), 2, retained);
-    println("/newMission " + retained);
+    missionJSON.setInt(codeTopic, this.getCodeName());
+    missionJSON.setInt(currMissionNumTopic, this.getMissionNum());
+    missionJSON.setFloat(gValTopic,this.getGVal());
+    client.publish(newMissionTopic, missionJSON.toString(), 2, retained);
+    println("newMission " + retained);
   }
   
   public void setMass(int m)                //only use if mass included in experiment

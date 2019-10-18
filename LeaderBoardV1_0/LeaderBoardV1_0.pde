@@ -18,6 +18,13 @@ Mission miss;
 Mission dummyMiss = new Mission();
 MQTTClient client;
 
+//define mqtt topic names
+String missionNumTopic = "capsule/missionNum";
+String newMissionTopic = "capsule/newMission";
+String codeTopic = "capsule/newMission/code";
+String currMissionNumTopic = "capsule/newMission/missionNum";
+String gValTopic = "capsule/newMission/gval";
+
 Linked_List recentScores;
 Linked_List topScores;
 
@@ -105,27 +112,27 @@ void draw()
 void clientConnected()
 {
   println("client connected");
-  client.subscribe("/missionNum", 2);
-  client.subscribe("/newMission", 2);
+  client.subscribe(missionNumTopic, 2);
+  client.subscribe(newMissionTopic, 2);
 }
 
 void messageReceived(String topic, byte[] payload)
 {
   println(topic);
-  if(topic == "/missionNum")
+  if(topic == missionNumTopic)
   {
     //parse JSON here, set missionNum to updated vals
     JSONObject updateMissionNum = parseJSONObject(payload.toString());
     missionNum = updateMissionNum.getJSONArray("currMissions").getIntArray();    //efficient yet janky coding at its finest. 
     println("missionNum Updated");
   }
-  else if(topic == "/newMission")
+  else if(topic == newMissionTopic)
   {
     JSONObject newMission = parseJSONObject(payload.toString());
-    capName = newMission.getInt("newMission/code");
-    gVal = newMission.getFloat("newMission/gval");
-    if(newMission.getInt("newMission/missionNum") != missionNum[capName])                   //these should be equal, but just in case...
-      missionNum[capName] = newMission.getInt("newMission/missionNum");
+    capName = newMission.getInt(codeTopic);
+    gVal = newMission.getFloat(gValTopic);
+    if(newMission.getInt(currMissionNumTopic) != missionNum[capName])                   //these should be equal, but just in case...
+      missionNum[capName] = newMission.getInt(currMissionNumTopic);
     newData = true;
     println("newMission Updated");
   }

@@ -28,6 +28,13 @@ Mission miss;                  //a mission that is reinstated every newData
 Mission currMiss;              //stores the mission value that we want to display
 MQTTClient client;
 
+//define mqtt topic names
+String missionNumTopic = "capsule/missionNum";
+String newMissionTopic = "capsule/newMission";
+String codeTopic = "capsule/newMission/code";
+String currMissionNumTopic = "capsule/newMission/missionNum";
+String gValTopic = "capsule/newMission/gval";
+
 int scoreInterval = height/2;     // Vertical spacing between scores
 int scoreStartx = width*14;       // Where to start scores list, x
 int scoreStarty = height*2;       // Where to start scores list, y
@@ -157,19 +164,17 @@ void serialEvent(Serial p)
 void clientConnected()
 {
   println("client connected");
-  client.subscribe("/missionNum", 2);
+  client.subscribe(missionNumTopic, 2);
 }
 
 void messageReceived(String topic, byte[] payload)
 {
   println(topic);
-  if(topic.toString() == "/missionNum" && !newData)
-  {
-    //parse JSON here, set missionNum to updated vals
-    JSONObject updateMissionNum = parseJSONObject(payload.toString());
-    missionNum = updateMissionNum.getJSONArray("currMissions").getIntArray();    //efficient yet janky coding at its finest. 
-    println("missionNum Updated");
-  }
-  else
-    println("Message Recieved from " + topic + "containing " + new String(payload));
+
+  //parse JSON here, set missionNum to updated vals
+  JSONObject updateMissionNum = parseJSONObject(payload.toString());
+  missionNum = updateMissionNum.getJSONArray("currMissions").getIntArray();    //efficient yet janky coding at its finest. 
+  println("missionNum Updated");
+
+  println("Message Recieved from " + topic + " containing " + new String(payload));
 }
