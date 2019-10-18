@@ -111,14 +111,14 @@ void clientConnected()
 
 void messageReceived(String topic, byte[] payload)
 {
-  if(topic == "missionNum")
+  if(topic == "/missionNum")
   {
     //parse JSON here, set missionNum to updated vals
     JSONObject updateMissionNum = parseJSONObject(payload.toString());
     missionNum = updateMissionNum.getJSONArray("currMissions").getIntArray();    //efficient yet janky coding at its finest. 
     println("missionNum Updated");
   }
-  else if(topic == "newMission")
+  else if(topic == "/newMission")
   {
     JSONObject newMission = parseJSONObject(payload.toString());
     capName = newMission.getInt("code");
