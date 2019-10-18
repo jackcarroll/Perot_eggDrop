@@ -105,12 +105,13 @@ void draw()
 void clientConnected()
 {
   println("client connected");
-  client.subscribe("missionNum");
-  client.subscribe("newMission");
+  client.subscribe("/missionNum", 2);
+  client.subscribe("/newMission", 2);
 }
 
 void messageReceived(String topic, byte[] payload)
 {
+  println(topic);
   if(topic == "/missionNum")
   {
     //parse JSON here, set missionNum to updated vals
@@ -121,10 +122,10 @@ void messageReceived(String topic, byte[] payload)
   else if(topic == "/newMission")
   {
     JSONObject newMission = parseJSONObject(payload.toString());
-    capName = newMission.getInt("code");
-    gVal = newMission.getFloat("gval");
-    if(newMission.getInt("missionNum") != missionNum[capName])                   //these should be equal, but just in case...
-      missionNum[capName] = newMission.getInt("missionNum");
+    capName = newMission.getInt("newMission/code");
+    gVal = newMission.getFloat("newMission/gval");
+    if(newMission.getInt("newMission/missionNum") != missionNum[capName])                   //these should be equal, but just in case...
+      missionNum[capName] = newMission.getInt("newMission/missionNum");
     newData = true;
     println("newMission Updated");
   }

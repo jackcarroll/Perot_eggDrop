@@ -239,7 +239,7 @@ public class Mission extends Capsule
     missionJSON.setInt("newMission/missionNum", this.getMissionNum());
     missionJSON.setFloat("newMission/gval",this.getGVal());
     client.publish("/newMission", missionJSON.toString(), 2, retained);
-    println("newMission " + retained);
+    println("/newMission " + retained);
   }
   
   public void setMass(int m)                //only use if mass included in experiment
