@@ -48,29 +48,27 @@ public class Linked_List
     return list;
   }
   
-  //add a new mission/node to the front of the topScores list
+  //add a new mission/node ordered into the topScores list
   public Linked_List addTop(Linked_List list, Mission m)
   {
     Node new_node = new Node(m);
     new_node.next = null;
+    Node curr;
     
-    if(list.head == null)
+    if(list.head == null || head.miss.getGVal() >= new_node.miss.getGVal())
+    {
+      new_node.next = list.head;
       list.head = new_node;
+    }
     else
     {
-      //traverse the list, comparing values and placing new_node in proper rank
-      Node curr = list.head, prev = list.head;
-      while(curr.next != null)
-      {
-        if(new_node.miss.getGVal() > curr.miss.getGVal())
-        {
-          prev.next = new_node;
-          new_node.next = curr;
-        }
-        prev = curr;
+      curr = list.head;
+      while(curr.next != null && curr.next.miss.getGVal() < new_node.miss.getGVal())
         curr = curr.next;
-      }
+      new_node.next = curr.next;
+      curr.next = new_node;
     }
+    
     return list;
   }
   
@@ -88,7 +86,7 @@ public class Linked_List
       new_node.next = list.head;
       list.head = new_node;
       
-      Node iter = list.head;
+      Node iter = list.head.next;
       while(iter.next != null)
       {
         if(iter.miss.getCodeName() == new_node.miss.getCodeName())
@@ -121,6 +119,18 @@ public class Linked_List
       prev.next = curr.next;
     
     return list;
+  }
+  
+  //print out the list
+  public void printList(Linked_List list)
+  {
+    Node curr = list.head;
+    
+    while(curr != null)
+    {
+      println(curr.miss.getCapName() + curr.miss.getMissionNum());
+      curr = curr.next;
+    }
   }
 }
 
@@ -189,7 +199,9 @@ public class Capsule
       String JSONKey = str(i);
       missionNumJSON.setInt(JSONKey,currMissions[i]);
     }
+    missionNumJSON.setInt(typeCheck,1);        //1 if missionNum, 0 if newMission
     client.publish(missionNumTopic, missionNumJSON.toString(), 2, retained);
+    checkBroker = true;
   }
 }
 
@@ -240,6 +252,7 @@ public class Mission extends Capsule
     missionJSON.setInt(codeTopic, this.getCodeName());
     missionJSON.setInt(currMissionNumTopic, this.getMissionNum());
     missionJSON.setFloat(gValTopic,this.getGVal());
+    missionJSON.setInt(typeCheck,0);        //1 if missionNum, 0 if newMission
     client.publish(newMissionTopic, missionJSON.toString(), 2, retained);
     println("newMission " + retained);
   }
