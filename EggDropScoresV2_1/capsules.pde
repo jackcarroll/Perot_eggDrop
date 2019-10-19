@@ -135,7 +135,7 @@ public class Capsule
   private String name;
   public int codeName;
   public int missionNum = 0;
-  private JSONArray missionNumJSON = new JSONArray();
+  private JSONObject missionNumJSON = new JSONObject();
   
   Capsule(int code)                           //constructor if you don't need to track mission num
   {
@@ -186,10 +186,11 @@ public class Capsule
     boolean retained = true;
     for(int i=0; i<currMissions.length; i++)
     {
-      missionNumJSON.setInt(i,currMissions[i]);
+      String JSONKey = str(i);
+      missionNumJSON.setInt(JSONKey,currMissions[i]);
     }
     client.publish(missionNumTopic, missionNumJSON.toString(), 2, retained);
-    println("missionNum " + retained);
+    checkBroker = true;
   }
 }
 

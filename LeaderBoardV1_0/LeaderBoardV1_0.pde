@@ -118,7 +118,29 @@ void clientConnected()
 
 void messageReceived(String topic, byte[] payload)
 {
-  println(topic);
+  //parse payload into json
+  JSONObject message = parseJSONObject(new String(payload));
+  if(message.isNull(codeTopic))
+  {
+    capName = message.getInt(codeTopic);
+    gVal = message.getFloat(gValTopic);
+    if(message.getInt(currMissionNumTopic) != missionNum[capName])                   //these should be equal, but just in case...
+      missionNum[capName] = message.getInt(currMissionNumTopic);
+    newData = true;
+    println("newMission Updated");
+  }
+  else
+  {
+    for(int i=0; i<missionNum.length; i++)
+    {
+      missionNum[i] = message.getInt(str(i)); 
+    }
+    println("missionNum Updated");
+  }
+  
+  
+  
+  
   if(topic == missionNumTopic)
   {
     //parse JSON here, set missionNum to updated vals

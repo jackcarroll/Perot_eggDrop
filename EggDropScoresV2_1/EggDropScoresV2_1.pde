@@ -22,6 +22,7 @@ boolean newData = false;
 boolean firstContact = true;   //if contact has not been established
 int passFail = 240;            //cutoff value for success/failure
 int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
+boolean checkBroker = false;
 
 Meter m;                       // Create a new meter, call it m
 Mission miss;                  //a mission that is reinstated every newData
@@ -169,12 +170,16 @@ void clientConnected()
 
 void messageReceived(String topic, byte[] payload)
 {
-  println(topic);
-
-  //parse JSON here, set missionNum to updated vals
-  JSONObject updateMissionNum = parseJSONObject(payload.toString());
-  missionNum = updateMissionNum.getJSONArray("currMissions").getIntArray();    //efficient yet janky coding at its finest. 
-  println("missionNum Updated");
-
-  println("Message Recieved from " + topic + " containing " + new String(payload));
+  if(checkBroker && !newData)
+  {
+    //parse JSON here, set missionNum to updated vals
+    JSONObject updateMissionNum = parseJSONObject(new String(payload));
+    for(int i=0; i<missionNum.length; i++)
+    {
+      missionNum[i] = updateMissionNum.getInt(str(i)); 
+    }
+    println("missionNum Updated");
+  
+    println("Message Recieved from " + topic + " containing " + new String(payload));
+  }
 }
