@@ -189,6 +189,7 @@ public class Capsule
       String JSONKey = str(i);
       missionNumJSON.setInt(JSONKey,currMissions[i]);
     }
+    missionNumJSON.setInt(typeCheck,1);       //1 if missionNum, 0 if newMission
     client.publish(missionNumTopic, missionNumJSON.toString(), 2, retained);
     checkBroker = true;
   }
@@ -241,6 +242,7 @@ public class Mission extends Capsule
     missionJSON.setInt(codeTopic, this.getCodeName());
     missionJSON.setInt(currMissionNumTopic, this.getMissionNum());
     missionJSON.setFloat(gValTopic,this.getGVal());
+    missionJSON.setInt(typeCheck,0);        //1 if missionNum, 0 if newMission
     client.publish(newMissionTopic, missionJSON.toString(), 2, retained);
     println("newMission " + retained);
   }

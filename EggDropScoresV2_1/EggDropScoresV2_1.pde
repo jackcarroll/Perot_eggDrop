@@ -35,6 +35,7 @@ String newMissionTopic = "capsule/newMission";
 String codeTopic = "capsule/newMission/code";
 String currMissionNumTopic = "capsule/newMission/missionNum";
 String gValTopic = "capsule/newMission/gval";
+String typeCheck = "typeCheck";
 
 int scoreInterval = height/2;     // Vertical spacing between scores
 int scoreStartx = width*14;       // Where to start scores list, x
