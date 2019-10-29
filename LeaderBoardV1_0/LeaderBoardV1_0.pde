@@ -78,34 +78,32 @@ void draw()
   //text("test 1", (width/1.1)-scoreCol2, scoreHeight);
   //text("test 2", (width/1.1)-scoreCol1, scoreHeight);
   //printing recentScores
-  int i = 0;
+  int i = 1;
   Node last = recentScores.head;
-  while(last.next != null && i<16)    //first row of recentScores
+  while(last.next != null && i<=16)    //first row of recentScores
   {
-    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), scoreCol1, scoreHeight+(i*scoreInterval));
+    text(i+". "+last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+nf(last.miss.getGVal(),0,3), scoreCol1, scoreHeight+(i*scoreInterval));
     i++;
     last = last.next;
   }
-  i=0;
-  while(last.next != null && i<16)    //second row of recentScores
+  while(last.next != null && i<=32)    //second row of recentScores
   {
-    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), scoreCol2, scoreHeight+(i*scoreInterval));
+    text(i+". "+last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+nf(last.miss.getGVal(),0,3), scoreCol2, scoreHeight+((i-16)*scoreInterval));
     i++;
     last = last.next;
   }
   //printing topScores
-  i = 0;
+  i = 1;
   last = topScores.head;
-  while(last.next != null && i<16)    //first row of topScores
+  while(last.next != null && i<=16)    //first row of topScores
   {
-    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), (width/1.25)-scoreCol2, scoreHeight+(i*scoreInterval));
+    text(i+". "+last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+nf(last.miss.getGVal(),0,3), (width/1.25)-scoreCol2, scoreHeight+(i*scoreInterval));
     i++;
     last = last.next;
   }
-  i=0;
-  while(last.next != null && i<32)    //second row of topScores
+  while(last.next != null && i<=32)    //second row of topScores
   {
-    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), (width/1.25)-scoreCol1, scoreHeight+(i*scoreInterval));
+    text(i+". "+last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+nf(last.miss.getGVal(),0,3), (width/1.25)-scoreCol1, scoreHeight+((i-16)*scoreInterval));
     i++;
     last = last.next;
   }
