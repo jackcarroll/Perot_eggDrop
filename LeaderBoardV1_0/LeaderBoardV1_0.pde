@@ -18,6 +18,7 @@ boolean checkBroker = false;
 Mission miss;
 Mission dummyMiss = new Mission();
 MQTTClient client;
+PFont shentox;
 
 //define mqtt topic names
 String missionNumTopic = "capsule/missionNum";
@@ -43,6 +44,10 @@ void setup()
   recentScores.addTop(recentScores,dummyMiss);
   topScores = new Linked_List();
   topScores.addTop(topScores,dummyMiss);
+  
+  // FONT SET UP //
+  shentox = createFont("Shentox-Medium.otf", 50);
+  textFont(shentox);
   
   // COMMUNICATION SET-UP //
   //MQTT
