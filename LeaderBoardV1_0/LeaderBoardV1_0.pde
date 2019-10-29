@@ -31,7 +31,7 @@ Linked_List recentScores;
 Linked_List topScores;
 
 int scoreInterval = height/2;     // Vertical spacing between scores
-int scoreHeight = height*3;
+int scoreHeight = height*2;
 int scoreCol1 = width*(3/2);
 int scoreCol2 = width*5;
 
@@ -65,9 +65,9 @@ void draw()
   background(0); // Set background to black
   fill(255,255,255);
   textSize(55);
-  text("Group Scores", width/7, height/6);
-  text("Top Scores", width-(width/3), height/6);
-  textSize(30);
+  text("Group Scores", width/7, height/8);
+  text("Top Scores", width-(width/3), height/8);
+  textSize(29);
   //text("test 1", scoreCol1, scoreHeight);
   //text("test 2", scoreCol2, scoreHeight);
   //text("test 1", (width/1.1)-scoreCol2, scoreHeight);
@@ -93,16 +93,26 @@ void draw()
   last = topScores.head;
   while(last.next != null && i<16)    //first row of topScores
   {
-    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), (width/1.1)-scoreCol2, scoreHeight+(i*scoreInterval));
+    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), (width/1.25)-scoreCol2, scoreHeight+(i*scoreInterval));
     i++;
     last = last.next;
   }
   i=0;
   while(last.next != null && i<32)    //second row of topScores
   {
-    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), (width/1.1)-scoreCol1, scoreHeight+(i*scoreInterval));
+    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+last.miss.getGVal(), (width/1.25)-scoreCol1, scoreHeight+(i*scoreInterval));
     i++;
     last = last.next;
+  }
+  
+  //clear group scores
+  if(mousePressed == true)
+  {
+    if(mouseX < width/2 && mouseY < height/2)
+    {
+      recentScores.head = new Node(dummyMiss);
+      recentScores.head.next = null;
+    }
   }
 }
 
