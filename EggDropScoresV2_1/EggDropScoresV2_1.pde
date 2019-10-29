@@ -3,7 +3,7 @@
  *  Created: August 9th, 2019
  *  Modified: N/A
  *  
- *  V2.1 - fully integrate mqtt and leaderboard
+ *  V2.1 - fully integrate mqtt and leaderboard with layout
  */
 
 import mqtt.*;               // Library for MQTT communication between Test Stations and Leaderboard
