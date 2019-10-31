@@ -131,7 +131,8 @@ public class Capsule
                                "Mariner", "Spirit", "Pathfinder", "Phoenix", "Curiosity", "Viking",
                                "Cassini", "Galileo", "Juno", "Magellan", "Infinity", "Falcon", 
                                "Serenity", "Reliant", "Defiant", "Kelvin", "Intrepid", "Eagle",
-                               "Odyssey", "Kestrel", "Saturn", "Hercules"};
+                               "Odyssey", "Kestrel", "Saturn", "Hercules", "Webb", "Hubble", "Surveyor",
+                               "Genesis", "Icarus", "Kirk"};
   private String name;
   public int codeName;
   public int missionNum = 0;

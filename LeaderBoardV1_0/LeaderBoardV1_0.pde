@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 int capName = 0;
 float gVal = 0;         //g value used for display. switched from 0-2047 scale to 0-400 scale
-int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
+int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
 boolean newData = false;
 boolean checkBroker = false;
 
@@ -52,7 +52,7 @@ void setup()
   // COMMUNICATION SET-UP //
   //MQTT
   client = new MQTTClient(this);
-  client.connect("mqtt://try:try@broker.shiftr.io","Test Station");
+  client.connect("tcp://10.75.135.16:1883","Test Station");
 }
 
 void draw()
@@ -67,7 +67,7 @@ void draw()
   }
   
   //update screen
-  background(0); // Set background to black
+  background(51,151,182); // Set background to black
   fill(255,255,255);
   textSize(55);
   text("Group Scores", width/7, height/8);

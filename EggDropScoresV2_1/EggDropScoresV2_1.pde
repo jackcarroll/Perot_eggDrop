@@ -22,7 +22,7 @@ boolean firstContact = true;   //if contact has not been established
 int passFail = 240;            //cutoff value for success/failure
 int dataMin = 80;              //lowest value, anything below is probably error in testing
 float displayGVal = dataMin;         //converted g value used for display. switched from 0-2047 scale to 0-400 scale
-int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
+int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
 boolean checkBroker = false;
 
 Meter m;                       // Create a new meter, call it m
@@ -85,7 +85,7 @@ void setup()
   port = new Serial(this, "COM5" ,9600);
   //MQTT
   client = new MQTTClient(this);
-  client.connect("mqtt://try:try@broker.shiftr.io","Test Station"); //"tcp://[ip address]:1883" prob ethernet connection
+  client.connect("tcp://10.75.135.16:1883","Test Station"); //"tcp://[ip address]:1883" prob ethernet connection
 }
 
 void draw()
