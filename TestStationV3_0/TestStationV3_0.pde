@@ -1,3 +1,5 @@
+import meter.*; //<>//
+
 /* TestStation V3.0
  *  Jackson Carroll
  *  Created: August 9th, 2019
@@ -47,8 +49,10 @@ void setup()
 {
   // METER SETUP DEFINITIONS //  
   fullScreen();
+  fill(51,151,182);
   m = new Meter(this, width/6, height/7);
   m.setMeterWidth(width*2/3);
+  m.setFrameColor(color(255,217,73));
   m.setTitleFontSize(20);
   m.setTitleFontName("Arial bold");
   m.setTitle("G-Force (g)");
@@ -100,12 +104,12 @@ void setup()
   }
   //MQTT
   client = new MQTTClient(this);
-  client.connect("tcp://10.75.132.118:1883","Test Station"); //"tcp://[ip address]:1883" prob ethernet connection
+  client.connect("mqtt://try:try@broker.shiftr.io","Test Station"); //"tcp://10.75.132.118:1883" prob ethernet connection
 }
 
 void draw()
 {
-  //this is where the code really changes //<>//
+  //this is where the code really changes
   if(newData)
   {
     //create new mission
