@@ -52,7 +52,7 @@ void setup()
   // COMMUNICATION SET-UP //
   //MQTT
   client = new MQTTClient(this);
-  client.connect("tcp://10.75.132.118:1883","Test Station");
+  client.connect("mqtt://try:try@broker.shiftr.io","Test Station");  //tcp://10.75.132.118:1883
 }
 
 void draw()
@@ -68,9 +68,16 @@ void draw()
   
   //update screen
   background(51,151,182); // Set background to black
-  fill(255,255,255);
   textSize(55);
+  fill(255,217,73);
+  rectMode(CENTER);
+  rect(width/4.4,height/9,width/5.5,height/11);
+  fill(255,255,255);
   text("Group Scores", width/7, height/8);
+  fill(255,217,73);
+  rectMode(CENTER);
+  rect(width-width/3.8, height/9,width/5.7,height/11);
+  fill(255,255,255);
   text("Top Scores", width-(width/3), height/8);
   textSize(29);
   //text("test 1", scoreCol1, scoreHeight);
