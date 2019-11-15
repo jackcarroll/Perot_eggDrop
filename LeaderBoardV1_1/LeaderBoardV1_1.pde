@@ -71,19 +71,17 @@ void draw()
   textSize(55);
   fill(255,217,73);
   rectMode(CENTER);
-  rect(width/4.4,height/9,width/5.5,height/11);
+  rect(width/4.4,height/9,width/2.75,height/11);
   fill(255,255,255);
-  text("Group Scores", width/7, height/8);
+  textAlign(CENTER);
+  text("Group Scores / Puntajes Grupales", width/7, height/8);
   fill(255,217,73);
   rectMode(CENTER);
-  rect(width-width/3.8, height/9,width/5.7,height/11);
+  rect(width-width/3.8, height/9,width/2.85,height/11);
   fill(255,255,255);
-  text("Top Scores", width-(width/3), height/8);
+  text("Top Scores / Puntajes más altos", width-(width/3), height/8);
   textSize(29);
-  //text("test 1", scoreCol1, scoreHeight);
-  //text("test 2", scoreCol2, scoreHeight);
-  //text("test 1", (width/1.1)-scoreCol2, scoreHeight);
-  //text("test 2", (width/1.1)-scoreCol1, scoreHeight);
+  textAlign(RIGHT);
   //printing recentScores
   int i = 1;
   Node last = recentScores.head;
