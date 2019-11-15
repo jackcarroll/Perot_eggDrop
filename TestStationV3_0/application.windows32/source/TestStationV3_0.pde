@@ -1,3 +1,5 @@
+import meter.*; //<>//
+
 /* TestStation V3.0
  *  Jackson Carroll
  *  Created: August 9th, 2019
@@ -25,7 +27,7 @@ float displayGVal = dataMin;         //converted g value used for display. switc
 int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
 boolean checkBroker = false;
 
-Meter m;                       // Create a new meter, call it m
+Meter m;                       //Create a new meter, call it m
 Mission miss;                  //a mission that is reinstated every newData
 Mission currMiss;              //stores the mission value that we want to display
 MQTTClient client;
@@ -47,8 +49,10 @@ void setup()
 {
   // METER SETUP DEFINITIONS //  
   fullScreen();
+  fill(51,151,182);
   m = new Meter(this, width/6, height/7);
   m.setMeterWidth(width*2/3);
+  m.setFrameColor(color(255,217,73));
   m.setTitleFontSize(20);
   m.setTitleFontName("Arial bold");
   m.setTitle("G-Force (g)");
@@ -100,12 +104,12 @@ void setup()
   }
   //MQTT
   client = new MQTTClient(this);
-  client.connect("tcp://10.75.132.118:1883","Test Station"); //"tcp://[ip address]:1883" prob ethernet connection
+  client.connect("tcp://10.75.135.16:1883","Test Station 2"); //for NUCs: "tcp://10.75.135.16:1883"  for testing: "mqtt://try:try@broker.shiftr.io"
 }
 
 void draw()
 {
-  //this is where the code really changes //<>//
+  //this is where the code really changes
   if(newData)
   {
     //create new mission
@@ -134,34 +138,52 @@ void draw()
   if(currMiss.getGVal() < dataMin)
   {
     text("Incomplete Data, Please Re-Test.", width/2, height/3.5);
+    text("Datos incompletos; por favor, vuelve a realizar la prueba.", width/2, height/2.5);
   }
   else
   {
+    textSize(40);
+    fill(255,255,255);
+    textAlign(CENTER);
+    text("Test values",width/12,height/1.8);
+    text("do not",width/12,height/1.69);
+    text("represent the",width/12,height/1.6);
+    text("true G-forces",width/12,height/1.51);
+    text("of capsule",width/12,height/1.43);
+    text("impact.",width/12,height/1.36);
+    text("Los valores de",width-width/12,height/1.8);
+    text("la prueba no",width-width/12,height/1.69);
+    text("representan las",width-width/12,height/1.6);
+    text("verdaderas",width-width/12,height/1.51);
+    text("fuerzas G del",width-width/12,height/1.43);
+    text("impacto de la",width-width/12,height/1.36);
+    text("cápsula.",width-width/12,height/1.3);
+    textSize(75);
     if(currMiss.getCapName() != null)
       text(currMiss.getCapName() + " " + currMiss.getMissionNum(), width/2, height/8);     //show name of current mission being displayed
-    textSize(40);
     if(currMiss.getGVal() != 401)
       displayGVal = currMiss.getGVal();
     m.updateMeter((int)displayGVal);
     fill(0,0,255);
+    textSize(40);
     text(displayGVal,width/2,height/2+height/3.5);
     if(currMiss.getGVal() < passFail && currMiss.getGVal() != 0)
     {
       textSize(75);
       fill(0,255,0);
       rectMode(CENTER);
-      rect(width/2,height/2+height/2.43,width/3,height/10);
+      rect(width/2,height/2+height/2.43,width/1.5,height/10);
       fill(255,255,255);
-      text("Mission Success!",width/2,height/2+height/2.3);
+      text("Mission Success! / ¡Misión Exitosa!",width/2,height/2+height/2.3);
     }
     else if(currMiss.getGVal()<401)    //don't display until a mission comes in
     {
       textSize(75);
       fill(255,0,0);
       rectMode(CENTER);
-      rect(width/2,height/2+height/2.43,width/3,height/10);
+      rect(width/2,height/2+height/2.43,width/1.5,height/10);
       fill(255,255,255);
-      text("Mission Failure!",width/2,height/2+height/2.3);
+      text("Mission Failure! / ¡Misión Fallida!",width/2,height/2+height/2.3);
     }
   }
 }

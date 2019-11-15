@@ -71,7 +71,7 @@ public void setup()
   // COMMUNICATION SET-UP //
   //MQTT
   client = new MQTTClient(this);
-  client.connect("tcp://10.75.132.118:1883","Test Station");
+  client.connect("tcp://10.75.135.16:1883","Leaderboard");  //for NUCs: "tcp://10.75.135.16:1883"  for testing: "mqtt://try:try@broker.shiftr.io"
 }
 
 public void draw()
@@ -87,15 +87,20 @@ public void draw()
   
   //update screen
   background(51,151,182); // Set background to black
-  fill(255,255,255);
   textSize(55);
-  text("Group Scores", width/7, height/8);
-  text("Top Scores", width-(width/3), height/8);
+  fill(255,217,73);
+  rectMode(CENTER);
+  rect(width/4.4f,height/9,width/2.3f,height/11);
+  fill(255,255,255);
+  textAlign(CENTER);
+  text("Group Scores / Puntajes Grupales", width/4.5f, height/8);
+  fill(255,217,73);
+  rectMode(CENTER);
+  rect(width-width/3.8f, height/9,width/2.5f,height/11);
+  fill(255,255,255);
+  text("Top Scores / Puntajes más Altos", width-(width/3.76f), height/8);
   textSize(29);
-  //text("test 1", scoreCol1, scoreHeight);
-  //text("test 2", scoreCol2, scoreHeight);
-  //text("test 1", (width/1.1)-scoreCol2, scoreHeight);
-  //text("test 2", (width/1.1)-scoreCol1, scoreHeight);
+  textAlign(LEFT);
   //printing recentScores
   int i = 1;
   Node last = recentScores.head;
@@ -134,6 +139,11 @@ public void draw()
     {
       recentScores.head = new Node(dummyMiss);
       recentScores.head.next = null;
+    }
+    else if(mouseX > width/2 && mouseY < height/2)
+    {
+      topScores.head = new Node(dummyMiss);
+      topScores.head.next = null;
     }
   }
 }
