@@ -71,17 +71,17 @@ void draw()
   textSize(55);
   fill(255,217,73);
   rectMode(CENTER);
-  rect(width/4.4,height/9,width/2.75,height/11);
+  rect(width/4.4,height/9,width/2.3,height/11);
   fill(255,255,255);
   textAlign(CENTER);
-  text("Group Scores / Puntajes Grupales", width/7, height/8);
+  text("Group Scores / Puntajes Grupales", width/4.5, height/8);
   fill(255,217,73);
   rectMode(CENTER);
-  rect(width-width/3.8, height/9,width/2.85,height/11);
+  rect(width-width/3.8, height/9,width/2.5,height/11);
   fill(255,255,255);
-  text("Top Scores / Puntajes más altos", width-(width/3), height/8);
+  text("Top Scores / Puntajes más Altos", width-(width/3.76), height/8);
   textSize(29);
-  textAlign(RIGHT);
+  textAlign(LEFT);
   //printing recentScores
   int i = 1;
   Node last = recentScores.head;
@@ -120,6 +120,11 @@ void draw()
     {
       recentScores.head = new Node(dummyMiss);
       recentScores.head.next = null;
+    }
+    else if(mouseX > width/2 && mouseY < height/2)
+    {
+      topScores.head = new Node(dummyMiss);
+      topScores.head.next = null;
     }
   }
 }
