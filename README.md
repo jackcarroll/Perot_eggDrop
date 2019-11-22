@@ -7,38 +7,7 @@ TestCapsule is test code built for an arduino uno, but simulates the actions tak
 
 BaseStationV1_2, EggDropScoresV1_2, and EggDropScoresV3_2 are all built to work together in one system. Used during testing August 2019.
 
+Current working code for the ChellENGe Lab test stations and leaderboard are TestStation V3.0, and Leaderboard V1.1.
 
-Structure of System:
-
-# Capsule code - Qduino
-  - measures accelerometer data
-  - sends data alongside capsule ID through Serial
-  
-# Translator code - Arduino MEGA
-  - recieves capsule ID and g Val data trough Serial
-  - converts from bytes to int
-  - sends data through Serial to Test Station
-  
-# Test Station code - Nuc
-  - Recieves data through Serial
-  - Constructs mission object to contain data
-      - checking mission number against global published mission number
-  - displays data, pass/fail
-  - publishes data and updates global published mission number
-  
-# Leaderboard code - Nuc
-  - Subscribes to incoming missions
-  - publishes most recent mission number
-  - displays list of most recent mission for each capsule
-  - displays list of best performing missions
-  
-# capsules.pde - Nuc
-  - definitions of capsule and mission objects
-  - mission inherits from capsule class
-  - must be paired with test station code and leaderboard code
-  
-MQTT System:
-  test stations and leaderboard connected.
-  topics:
-    - posted mission for each test station
-    - global list of most recent mission number for each capsule
+System Structure:
+Each capsule is treated as it's own entity that gathers data as a mission, which constitutes a unique number (i.e. Apollo 5) and the g value it measured. That data is collected by the Test station, organized into that format, and sent to the MQTT broker. It then displays the current mission, alongside with whether that mission passed or failed. The Leaderboard then retrieves the latest missions from the broker, and adds them to two lists, recentScores and topScores. recentScores, or group scores, is a collection of the most recent trial of each capsule, and the first 32 are displayed. Top Scores is a sorted list containing the missions that acheived the lowest g value. 
