@@ -13,10 +13,10 @@ int capName = 0;
 float gVal = 0;         //g value used for display. switched from 0-2047 scale to 0-400 scale
 int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
 boolean newData = false;
-boolean checkBroker = false;
 
+//Object declarations
 Mission miss;
-Mission dummyMiss = new Mission();
+Mission dummyMiss = new Mission();    //used as empty mission for screen formatting
 MQTTClient client;
 PFont shentox;
 
@@ -28,6 +28,7 @@ String currMissionNumTopic = "capsule/newMission/missionNum";
 String gValTopic = "capsule/newMission/gval";
 String typeCheck = "typeCheck";
 
+//lists for group scores and top scores respectively
 Linked_List recentScores;
 Linked_List topScores;
 
@@ -40,6 +41,7 @@ void setup()
 {
   fullScreen();
   
+  //assigning dummyMiss so that the heads of the lists aren't null
   recentScores = new Linked_List();
   recentScores.addTop(recentScores,dummyMiss);
   topScores = new Linked_List();
@@ -57,28 +59,21 @@ void setup()
 
 void draw()
 { 
-  if(newData)
+  if(newData)    //if we have recieved a new mission
   {
     Mission miss = new Mission(capName, missionNum[capName], gVal);
     println(miss.getCapName() + miss.getMissionNum());
     recentScores = recentScores.addRecent(recentScores, miss);
-    topScores = topScores.addTop(topScores, miss);
+    topScores = topScores.addTop(topScores, miss);    //addTop automatically sorts the missions, so we do not need to worry about that here
     newData = false;
   }
   
   //update screen
   background(51,151,182); // Set background to black
   textSize(55);
-  fill(255,217,73);
-  rectMode(CENTER);
-  rect(width/4.4,height/9,width/2.3,height/11);
   fill(255,255,255);
   textAlign(CENTER);
   text("Group Scores / Puntajes Grupales", width/4.5, height/8);
-  fill(255,217,73);
-  rectMode(CENTER);
-  rect(width-width/3.8, height/9,width/2.5,height/11);
-  fill(255,255,255);
   text("Top Scores / Puntajes más Altos", width-(width/3.76), height/8);
   textSize(29);
   textAlign(LEFT);
@@ -87,13 +82,13 @@ void draw()
   Node last = recentScores.head;
   while(last.next != null && i<=16)    //first row of recentScores
   {
-    text(i+". "+last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+nf(last.miss.getGVal(),0,3), scoreCol1, scoreHeight+(i*scoreInterval));
+    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+nf(last.miss.getGVal(),0,3), scoreCol1, scoreHeight+(i*scoreInterval));
     i++;
     last = last.next;
   }
   while(last.next != null && i<=32)    //second row of recentScores
   {
-    text(i+". "+last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+nf(last.miss.getGVal(),0,3), scoreCol2, scoreHeight+((i-16)*scoreInterval));
+    text(last.miss.getCapName()+" "+last.miss.getMissionNum()+" - "+nf(last.miss.getGVal(),0,3), scoreCol2, scoreHeight+((i-16)*scoreInterval));
     i++;
     last = last.next;
   }
@@ -113,15 +108,15 @@ void draw()
     last = last.next;
   }
   
-  //clear group scores
+  //clearing scores
   if(mousePressed == true)
   {
-    if(mouseX < width/2 && mouseY < height/2)
+    if(mouseX < width/2 && mouseY < height/2)  //group scores
     {
       recentScores.head = new Node(dummyMiss);
       recentScores.head.next = null;
     }
-    else if(mouseX > width/2 && mouseY < height/2)
+    else if(mouseX > width/2 && mouseY < height/2)  //top scores
     {
       topScores.head = new Node(dummyMiss);
       topScores.head.next = null;
@@ -143,16 +138,16 @@ void messageReceived(String topic, byte[] payload)
   {
     //parse payload into json
     JSONObject message = parseJSONObject(new String(payload));
-    if(message.getInt(typeCheck) == 0)
+    if(message.getInt(typeCheck) == 0)   //1 if missionNum, 0 if newMission
     {
       capName = message.getInt(codeTopic);
       gVal = message.getFloat(gValTopic);
-      if(message.getInt(currMissionNumTopic) != missionNum[capName])                   //these should be equal, but just in case...
+      if(message.getInt(currMissionNumTopic) != missionNum[capName])      //these should be equal, but just in case...
         missionNum[capName] = message.getInt(currMissionNumTopic);
       newData = true;
       println("newMission Updated");
     }
-    else if(message.getInt(typeCheck) == 1)
+    else if(message.getInt(typeCheck) == 1)   //1 if missionNum, 0 if newMission
     {
       for(int i=0; i<missionNum.length; i++)
       {

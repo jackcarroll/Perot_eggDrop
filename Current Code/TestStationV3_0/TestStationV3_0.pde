@@ -1,6 +1,4 @@
-import meter.*; //<>//
-
-/* TestStation V3.0
+/* TestStation V3.0 //<>//
  *  Jackson Carroll
  *  Created: August 9th, 2019
  *  Modified: N/A
@@ -27,6 +25,7 @@ float displayGVal = dataMin;         //converted g value used for display. switc
 int missionNum[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};    //used to keep track of most recent mission number for each capsule
 boolean checkBroker = false;
 
+//Object declarations
 Meter m;                       //Create a new meter, call it m
 Mission miss;                  //a mission that is reinstated every newData
 Mission currMiss;              //stores the mission value that we want to display
@@ -78,7 +77,7 @@ void setup()
   m.setSensorWarningLowText("");
   m.setSensorWarningHighText("");
   
-  currMiss = new Mission();
+  currMiss = new Mission();    //temp mission object to store mission currently being displayed
   
   // FONT SET UP //
   shentox = createFont("Shentox-Medium.otf", 50);
@@ -117,7 +116,7 @@ void draw()
     displayGVal = ((float)gVal/2047)*400;     //(gVal/2047)*400 = the actual measured g Value based on 0-400g scale.
     Mission miss = new Mission(capName, missionNum[capName], displayGVal);
     
-    if(miss.getGVal() > 80)
+    if(miss.getGVal() > dataMin)    //minimum value, i.e. valid data
     {
       //send updated missionNum to broker
       miss.newMissionNum(missionNum);
@@ -135,7 +134,7 @@ void draw()
   fill(255,255,255);
   textSize(75);
   textAlign(CENTER);
-  if(currMiss.getGVal() < dataMin)
+  if(currMiss.getGVal() < dataMin)    //if data isn't valid
   {
     text("Incomplete Data, Please Re-Test.", width/2, height/3.5);
     text("Datos incompletos; por favor, vuelve a realizar la prueba.", width/2, height/2.5);
@@ -145,6 +144,7 @@ void draw()
     textSize(40);
     fill(255,255,255);
     textAlign(CENTER);
+    //sorry this is so bad, only way i could format it correctly
     text("Test values",width/12,height/1.8);
     text("do not",width/12,height/1.69);
     text("represent the",width/12,height/1.6);
@@ -158,16 +158,17 @@ void draw()
     text("fuerzas G del",width-width/12,height/1.43);
     text("impacto de la",width-width/12,height/1.36);
     text("cápsula.",width-width/12,height/1.3);
+    
     textSize(75);
     if(currMiss.getCapName() != null)
       text(currMiss.getCapName() + " " + currMiss.getMissionNum(), width/2, height/8);     //show name of current mission being displayed
     if(currMiss.getGVal() != 401)
-      displayGVal = currMiss.getGVal();
-    m.updateMeter((int)displayGVal);
+      displayGVal = currMiss.getGVal();    //if the g value is valid, format it to display.
+    m.updateMeter((int)displayGVal);       //update the needle on the meter
     fill(0,0,255);
     textSize(40);
-    text(displayGVal,width/2,height/2+height/3.5);
-    if(currMiss.getGVal() < passFail && currMiss.getGVal() != 0)
+    text(displayGVal,width/2,height/2+height/3.5);    //show a number underneath the meter
+    if(currMiss.getGVal() < passFail && currMiss.getGVal() != 0)    //if they are within the passfail regions
     {
       textSize(75);
       fill(0,255,0);

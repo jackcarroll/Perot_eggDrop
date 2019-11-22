@@ -48,29 +48,27 @@ public class Linked_List
     return list;
   }
   
-  //add a new mission/node to the front of the topScores list
+  //add a new mission/node ordered into the topScores list
   public Linked_List addTop(Linked_List list, Mission m)
   {
     Node new_node = new Node(m);
     new_node.next = null;
+    Node curr;
     
-    if(list.head == null)
+    if(list.head == null || head.miss.getGVal() >= new_node.miss.getGVal())
+    {
+      new_node.next = list.head;
       list.head = new_node;
+    }
     else
     {
-      //traverse the list, comparing values and placing new_node in proper rank
-      Node curr = list.head, prev = list.head;
-      while(curr.next != null)
-      {
-        if(new_node.miss.getGVal() > curr.miss.getGVal())
-        {
-          prev.next = new_node;
-          new_node.next = curr;
-        }
-        prev = curr;
+      curr = list.head;
+      while(curr.next != null && curr.next.miss.getGVal() < new_node.miss.getGVal())
         curr = curr.next;
-      }
+      new_node.next = curr.next;
+      curr.next = new_node;
     }
+    
     return list;
   }
   
@@ -88,7 +86,7 @@ public class Linked_List
       new_node.next = list.head;
       list.head = new_node;
       
-      Node iter = list.head;
+      Node iter = list.head.next;
       while(iter.next != null)
       {
         if(iter.miss.getCodeName() == new_node.miss.getCodeName())
@@ -122,6 +120,18 @@ public class Linked_List
     
     return list;
   }
+  
+  //print out the list
+  public void printList(Linked_List list)
+  {
+    Node curr = list.head;
+    
+    while(curr != null)
+    {
+      println(curr.miss.getCapName() + curr.miss.getMissionNum());
+      curr = curr.next;
+    }
+  }
 }
 
 public class Capsule 
@@ -133,10 +143,10 @@ public class Capsule
                                "Serenity", "Reliant", "Defiant", "Kelvin", "Intrepid", "Eagle",
                                "Odyssey", "Kestrel", "Saturn", "Hercules", "Webb", "Hubble", "Surveyor",
                                "Genesis", "Icarus", "Kirk"};
-  private String name;
-  public int codeName;
+  private String name;                        //Display Name
+  public int codeName;                        //code from 0-40 that is used by code to track capsules
   public int missionNum = 0;
-  private JSONObject missionNumJSON = new JSONObject();
+  private JSONObject missionNumJSON = new JSONObject();  //object used to format mission num for sending over mqtt
   
   Capsule(int code)                           //constructor if you don't need to track mission num
   {
@@ -182,29 +192,29 @@ public class Capsule
     return missionNum;
   }
   
-  public void newMissionNum(int[] currMissions)
-  {
+  public void newMissionNum(int[] currMissions)  //this function is called to send the new array
+  {                                              //of recent mission nums so every station stays updated
     boolean retained = true;
     for(int i=0; i<currMissions.length; i++)
     {
       String JSONKey = str(i);
       missionNumJSON.setInt(JSONKey,currMissions[i]);
     }
-    missionNumJSON.setInt(typeCheck,1);       //1 if missionNum, 0 if newMission
-    client.publish(missionNumTopic, missionNumJSON.toString(), 2, retained);
+    missionNumJSON.setInt(typeCheck,1);        //1 if missionNum, 0 if newMission
+    client.publish(missionNumTopic, missionNumJSON.toString(), 2, retained);    //publish it to broker
     checkBroker = true;
   }
 }
 
-public class Mission extends Capsule
+public class Mission extends Capsule          //having mission inherit from capsule allows us to not worry about display name and other elements when we don't need to
 {
-  public float gVal;                    //401 is larger than the largest possible score (real g-value), init-ed for potential comparison purposes
+  public float gVal;                          //401 is larger than the largest possible score (real g-value), init-ed for potential comparison purposes
   public int mass = 0;                        //second variable that is unused, but left in code as option
-  private JSONObject missionJSON = new JSONObject();
+  private JSONObject missionJSON = new JSONObject();  //object for formatting mission data for mqtt
   
   Mission(int code, float g)                  //MAIN CONSTRUCTOR
   {
-    super(code);
+    super(code);                              //execute the constructor for the superclass (capsule)
     gVal = g;
   }
   
@@ -237,7 +247,7 @@ public class Mission extends Capsule
     return gVal;
   }
   
-  public void newMission()
+  public void newMission()                  //run when code is ready to publish a new mission to the broker
   {
     boolean retained = true;
     missionJSON.setInt(codeTopic, this.getCodeName());
